@@ -1,20 +1,20 @@
 const http = require("http");
+const fs = require("fs");
 
 const PORT = process.env.PORT || 3000;
 
 // Create server
 const server = http.createServer((req, res) => {
-  // Headers should be set before sending data
-  res.setHeader("Content-Type", "text/html");
-  res.statusCode = 200;
+  const fileName = req.url.slice(1) || "index.html";
 
-  // sends a portion of data
-  res.write("<h1>Hello, world!</h1>");
-  res.write("next portion of data");
-  res.write("one more portion of data");
+  fs.readFile(`./public/${fileName}`, (err, data) => {
+    if (!err) {
+      res.end(data);
+    }
 
-  // finishes the response
-  res.end("the last portion of data");
+    res.statusCode = 404;
+    res.end();
+  });
 });
 
 // Enables the server
